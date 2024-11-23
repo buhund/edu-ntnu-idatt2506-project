@@ -1,5 +1,3 @@
-// lib/screens/list_screen.dart
-
 import 'package:flutter/material.dart';
 import '../models/list_model.dart';
 import '../models/item_model.dart';
@@ -16,6 +14,7 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   late ListModel _listModel;
+  final TextEditingController _textController = TextEditingController(); // Controller for the text field
 
   @override
   void initState() {
@@ -23,13 +22,22 @@ class _ListScreenState extends State<ListScreen> {
     _listModel = widget.listModel;
   }
 
-  void _addItem(String text) {
+  void _addItem() {
+    if (_textController.text.isNotEmpty) {
+      setState(() {
+        _listModel.items.add(ItemModel(text: _textController.text));
+        _textController.clear(); // Clear the input field after adding
+      });
+      _saveList();
+    }
+  }
+
+  void _deleteItem(int index) {
     setState(() {
-      _listModel.items.add(ItemModel(text: text));
+      _listModel.items.removeAt(index);
     });
     _saveList();
   }
-
 
   void _toggleCompletion(int index) {
     setState(() {
@@ -42,20 +50,16 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   Future<void> _saveList() async {
-    print('Saving list: ${_listModel.name}');
-    final lists = await StorageService.readLists();
-    final index = lists.indexWhere((list) => list.name == _listModel.name);
-    if (index != -1) {
-      lists[index] = _listModel;
-    }
-    await StorageService.writeLists(lists);
+    await StorageService.writeList(_listModel);
   }
-
 
   @override
   Widget build(BuildContext context) {
-    final completedItems = _listModel.items.where((item) => item.isCompleted).toList();
-    final incompleteItems = _listModel.items.where((item) => !item.isCompleted).toList();
+    // Sort items: incomplete first, then complete
+    final sortedItems = [
+      ..._listModel.items.where((item) => !item.isCompleted), // Incomplete
+      ..._listModel.items.where((item) => item.isCompleted), // Complete
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -66,37 +70,59 @@ class _ListScreenState extends State<ListScreen> {
           // Input field for new items
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: const InputDecoration(
-                labelText: 'New Item',
-                border: OutlineInputBorder(),
-              ),
-              onSubmitted: (value) {
-                if (value.isNotEmpty) {
-                  _addItem(value);
-                }
-              },
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _textController, // Attach the controller
+                    decoration: const InputDecoration(
+                      labelText: 'New Item',
+                      border: OutlineInputBorder(),
+                    ),
+                    onSubmitted: (value) {
+                      _addItem(); // Add the item when Enter is pressed
+                    },
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: _addItem, // Add the new item
+                ),
+              ],
             ),
           ),
           // List of items
           Expanded(
-            child: ListView(
-              children: [
-                // Incomplete items
-                ...incompleteItems.map((item) => ListTile(
-                  title: Text(item.text),
-                  onTap: () => _toggleCompletion(_listModel.items.indexOf(item)),
-                )),
-                const Divider(),
-                // Completed items
-                ...completedItems.map((item) => ListTile(
+            child: ListView.builder(
+              itemCount: sortedItems.length,
+              itemBuilder: (context, index) {
+                final item = sortedItems[index];
+                return ListTile(
+                  leading: IconButton(
+                    icon: Icon(
+                      item.isCompleted
+                          ? Icons.check_circle // Full sirkel for fullført
+                          : Icons.radio_button_unchecked, // Tom sirkel for ikke-fullført
+                      color: item.isCompleted ? Colors.green : Colors.grey,
+                    ),
+                    onPressed: () => _toggleCompletion(
+                        _listModel.items.indexOf(item)), // Toggle status
+                  ),
                   title: Text(
                     item.text,
-                    style: const TextStyle(decoration: TextDecoration.lineThrough),
+                    style: TextStyle(
+                      decoration: item.isCompleted
+                          ? TextDecoration.lineThrough // Strek gjennom for fullførte
+                          : TextDecoration.none, // Ingen stil for ikke-fullførte
+                    ),
                   ),
-                  onTap: () => _toggleCompletion(_listModel.items.indexOf(item)),
-                )),
-              ],
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    onPressed: () =>
+                        _deleteItem(_listModel.items.indexOf(item)), // Delete the item
+                  ),
+                );
+              },
             ),
           ),
         ],

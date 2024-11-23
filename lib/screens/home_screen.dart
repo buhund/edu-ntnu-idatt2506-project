@@ -1,5 +1,3 @@
-// lib/screens/home_screen.dart
-
 import 'package:flutter/material.dart';
 import '../models/list_model.dart';
 import '../services/storage_service.dart';
@@ -22,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadLists() async {
-    final loadedLists = await StorageService.readLists();
+    final loadedLists = await StorageService.readAllLists();
     setState(() {
       _lists = loadedLists;
     });
@@ -33,14 +31,53 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _lists.add(newList);
     });
-    await StorageService.writeLists(_lists);
+    await StorageService.writeList(newList); // Save to a separate file
   }
 
   Future<void> _deleteList(int index) async {
+    final listName = _lists[index].name;
     setState(() {
       _lists.removeAt(index);
     });
-    await StorageService.writeLists(_lists);
+    await StorageService.deleteList(listName); // Delete the corresponding file
+  }
+
+
+  void _showAddListDialog() {
+    String newListName = '';
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add New List'),
+          content: TextField(
+            autofocus: true,
+            decoration: const InputDecoration(hintText: 'List Name'),
+            onChanged: (value) {
+              newListName = value;
+            },
+          ),
+          actions: [
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+            ElevatedButton(
+              child: const Text('Add'),
+              onPressed: () {
+                if (newListName.isNotEmpty) {
+                  _addNewList(newListName); // Add the list
+                }
+                Navigator.of(context).pop(); // Close the dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -48,6 +85,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Lists'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              _showAddListDialog();
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -72,30 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       _loadLists(); // Reload lists when returning from ListScreen
                     });
                   },
-
                 );
               },
-            ),
-          ),
-          // Add new list
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    decoration: const InputDecoration(
-                      labelText: 'New List',
-                      border: OutlineInputBorder(),
-                    ),
-                    onSubmitted: (value) {
-                      if (value.isNotEmpty) {
-                        _addNewList(value);
-                      }
-                    },
-                  ),
-                ),
-              ],
             ),
           ),
         ],
