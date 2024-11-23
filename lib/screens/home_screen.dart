@@ -12,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<ListModel> _lists = [];
+  final TextEditingController _textController = TextEditingController(); // Controller for input field
 
   @override
   void initState() {
@@ -27,6 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _addNewList(String listName) async {
+    // Error if list with same name already exists
+    if (_lists.any((list) => list.name == listName)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('A list with this name already exists')),
+      );
+      return;
+    }
+
     final newList = ListModel.newList(name: listName); // Use factory method for creating new list
     setState(() {
       _lists.add(newList);
@@ -42,7 +51,25 @@ class _HomeScreenState extends State<HomeScreen> {
     await StorageService.deleteList(list.name, list.id);
   }
 
+  void _handleAddList() {
+    if (_textController.text.isNotEmpty) {
+      _addNewList(_textController.text); // Add new list via bottom input field
+      _textController.clear(); // Empty textfield on submit
+      FocusScope.of(context).requestFocus(FocusNode()); // Refocus input field
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('List name cannot be empty')),
+      );
+    }
+  }
 
+  @override
+  void dispose() {
+    _textController.dispose(); // Clean up text controller
+    super.dispose();
+  }
+
+  // Add new list via + button and dialog
   void _showAddListDialog() {
     String newListName = '';
 
@@ -86,12 +113,13 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('My Lists'),
         actions: [
-          IconButton(
+          // Add list via + button and dialog. Not as per assignment spec
+          /**IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
               _showAddListDialog();
             },
-          ),
+          ),*/
         ],
       ),
       body: Column(
@@ -119,6 +147,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 );
               },
+            ),
+          ),
+          // Input field for adding new lists, as per assignment spec
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _textController,
+                    decoration: const InputDecoration(
+                      labelText: 'Add New List',
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (value) {
+                      setState(() {}); // Oppdater knappen når tekstfeltet endres
+                    },
+                    onSubmitted: (value) => _handleAddList(), // Handle Enter key
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  color: _textController.text.isNotEmpty ? Colors.blue : Colors.grey, // Dynamisk farge
+                  onPressed: _textController.text.isNotEmpty
+                      ? _handleAddList // Kun aktiv hvis feltet ikke er tomt
+                      : null, // Handle add button
+                ),
+              ],
             ),
           ),
         ],
