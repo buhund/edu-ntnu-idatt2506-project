@@ -70,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Add new list via + button and dialog
+  // Replaced (at least for now) by the input field at the bottom of the screen
   void _showAddListDialog() {
     String newListName = '';
 
@@ -162,21 +163,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
-                      setState(() {}); // Oppdater knappen når tekstfeltet endres
+                      setState(() {}); // Update button color on text change
                     },
                     onSubmitted: (value) => _handleAddList(), // Handle Enter key
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  color: _textController.text.isNotEmpty ? Colors.blue : Colors.grey, // Dynamisk farge
-                  onPressed: _textController.text.isNotEmpty
-                      ? _handleAddList // Kun aktiv hvis feltet ikke er tomt
-                      : null, // Handle add button
+                const SizedBox(width: 8), // Add padding between TextField and button
+                Material(
+                  elevation: _textController.text.isNotEmpty ? 6.0 : 0.0, // Elevation for active state
+                  shape: const CircleBorder(),
+                  color: _textController.text.isNotEmpty ? Colors.blue : Colors.grey, // Background color
+                  child: SizedBox(
+                    width: 40, // Adjust button width
+                    height: 40, // Adjust button height
+                    child: IconButton(
+                      iconSize: 20, // Reduce the size of the icon itself
+                      icon: const Icon(Icons.add),
+                      color: Colors.white, // Icon color
+                      onPressed: _textController.text.isNotEmpty
+                          ? _handleAddList // Activate button only when text is present
+                          : null, // Disable button when text is empty
+                    ),
+                  ),
                 ),
               ],
             ),
           ),
+
         ],
       ),
     );

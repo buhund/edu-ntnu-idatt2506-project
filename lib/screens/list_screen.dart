@@ -22,6 +22,7 @@ class _ListScreenState extends State<ListScreen> {
     super.initState();
     _listModel = widget.listModel;
     _listModel.items = List.from(_listModel.items); // Convert to mutable list
+    _textController.addListener(_updateAddButtonState); // Listener for input field
   }
 
   @override
@@ -29,6 +30,10 @@ class _ListScreenState extends State<ListScreen> {
     _textController.dispose(); // Dispose of controller
     _focusNode.dispose(); // Dispose of focus node
     super.dispose();
+  }
+
+  void _updateAddButtonState() {
+    setState(() {}); // Trigger rebuild to update button state and color
   }
 
   void _addItem() {
@@ -104,9 +109,23 @@ class _ListScreenState extends State<ListScreen> {
                     },
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: _addItem, // Add the new item
+                const SizedBox(width: 8), // Add padding between TextField and button
+                Material(
+                  elevation: _textController.text.isNotEmpty ? 6.0 : 0.0, // Higher elevation for active state
+                  shape: const CircleBorder(),
+                  color: _textController.text.isNotEmpty ? Colors.blue : Colors.grey, // Background color
+                  child: SizedBox(
+                    width: 40, // Adjust button width
+                    height: 40, // Adjust button height
+                    child: IconButton(
+                      iconSize: 20, // Reduce the size of the icon itself
+                      icon: const Icon(Icons.add),
+                      color: Colors.white, // Icon color
+                      onPressed: _textController.text.isNotEmpty
+                          ? _addItem // Add the new item
+                          : null, // Disable button when field is empty
+                    ),
+                  ),
                 ),
               ],
             ),
