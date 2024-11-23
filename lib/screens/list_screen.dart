@@ -34,8 +34,10 @@ class _ListScreenState extends State<ListScreen> {
   void _addItem() {
     if (_textController.text.isNotEmpty) {
       setState(() {
-        _listModel.items.add(ItemModel(text: _textController.text));
-        _textController.clear(); // Clear the input field for addint item
+        _listModel.items.add(
+          ItemModel.newItem(text: _textController.text), // Use factory method for creating new item
+        );
+        _textController.clear(); // Clear the input field
       });
       _saveList();
 
@@ -56,6 +58,7 @@ class _ListScreenState extends State<ListScreen> {
   void _toggleCompletion(int index) {
     setState(() {
       _listModel.items[index] = ItemModel(
+        id: _listModel.items[index].id, // Behold eksisterende ID
         text: _listModel.items[index].text,
         isCompleted: !_listModel.items[index].isCompleted,
       );

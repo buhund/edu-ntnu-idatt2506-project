@@ -27,18 +27,19 @@ class StorageService {
   }
 
   // Get a specific file for a list
-  static Future<File> _listFile(String listName) async {
+  static Future<File> _listFile(String name, String id) async {
     final path = await _localPath;
 
-    // Sanitize name: replace æøå, remove special characters and trim spaces
+    // Sanitize name
+    /**
     final sanitizedFileName = listName
         .toLowerCase()
-        .replaceAll('æ', 'ae')
-        .replaceAll('ø', 'oe')
-        .replaceAll('å', 'aa')
-        .replaceAll(RegExp(r'[^\w\s]'), '_') // Replace non-alphanumeric characters with _
-        .replaceAll(RegExp(r'\s+'), '_') // Replace spaces with _
-        .trim(); // Remove leading/trailing spaces
+        .replaceAll(RegExp(r'[^\wæøåÆØÅ\s]+'), '_')
+        .replaceAll(RegExp(r'\s+'), '_')
+        .trim();
+     **/
+
+    final sanitizedFileName = '${name.replaceAll(RegExp(r'[^\w\s]+'), '_').trim()}_$id';
 
     return File('$path/$sanitizedFileName.json');
   }
@@ -47,16 +48,16 @@ class StorageService {
 
   // Save a single list to its own JSON file
   static Future<void> writeList(ListModel list) async {
-    final file = await _listFile(list.name);
+    final file = await _listFile(list.name, list.id);
     final json = jsonEncode(list.toJson());
     log('Saving list to: ${file.path}'); // Debug logging for saviung list to path
     await file.writeAsString(json);
   }
 
   // Read a single list from its JSON file
-  static Future<ListModel?> readList(String listName) async {
+  static Future<ListModel?> readList(String name, String id) async {
     try {
-      final file = await _listFile(listName);
+      final file = await _listFile(name, id);
       if (await file.exists()) {
         final contents = await file.readAsString();
         final json = jsonDecode(contents);
@@ -89,8 +90,8 @@ class StorageService {
   }
 
   // Delete a specific list's JSON file
-  static Future<void> deleteList(String listName) async {
-    final file = await _listFile(listName);
+  static Future<void> deleteList(String name, String id) async {
+    final file = await _listFile(name, id);
     if (await file.exists()) {
       await file.delete();
       log('Deleted list file: ${file.path}'); // Debug logging for deleting list from path

@@ -27,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _addNewList(String listName) async {
-    final newList = ListModel(name: listName);
+    final newList = ListModel.newList(name: listName); // Use factory method for creating new list
     setState(() {
       _lists.add(newList);
     });
@@ -35,11 +35,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _deleteList(int index) async {
-    final listName = _lists[index].name;
+    final list = _lists[index];
     setState(() {
       _lists.removeAt(index);
     });
-    await StorageService.deleteList(listName); // Delete the corresponding file
+    await StorageService.deleteList(list.name, list.id);
   }
 
 
