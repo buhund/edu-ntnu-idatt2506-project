@@ -27,19 +27,29 @@ class StorageService {
   }
 
   // Get a specific file for a list
-  // Maybe add prefix to the file name. Maybe not needed when using a subdir.
-  // I shall have think about it!
   static Future<File> _listFile(String listName) async {
     final path = await _localPath;
-    final sanitizedFileName = listName.replaceAll(RegExp(r'[^\w\s]+'), '_'); // Sanitize name
+
+    // Sanitize name: replace æøå, remove special characters and trim spaces
+    final sanitizedFileName = listName
+        .toLowerCase()
+        .replaceAll('æ', 'ae')
+        .replaceAll('ø', 'oe')
+        .replaceAll('å', 'aa')
+        .replaceAll(RegExp(r'[^\w\s]'), '_') // Replace non-alphanumeric characters with _
+        .replaceAll(RegExp(r'\s+'), '_') // Replace spaces with _
+        .trim(); // Remove leading/trailing spaces
+
     return File('$path/$sanitizedFileName.json');
   }
+
+
 
   // Save a single list to its own JSON file
   static Future<void> writeList(ListModel list) async {
     final file = await _listFile(list.name);
     final json = jsonEncode(list.toJson());
-    log('Saving list to: ${file.path}'); // Debug log
+    log('Saving list to: ${file.path}'); // Debug logging for saviung list to path
     await file.writeAsString(json);
   }
 
@@ -54,7 +64,7 @@ class StorageService {
       }
       return null;
     } catch (e) {
-      log('Error reading list: $e');
+      log('Error reading list: $e'); // Debug logging for reading list from path
       return null;
     }
   }
@@ -73,7 +83,7 @@ class StorageService {
       }
       return lists;
     } catch (e) {
-      log('Error loading all lists: $e');
+      log('Error loading all lists: $e'); // Debug logging for loading all lists from path
       return [];
     }
   }
@@ -83,7 +93,7 @@ class StorageService {
     final file = await _listFile(listName);
     if (await file.exists()) {
       await file.delete();
-      log('Deleted list file: ${file.path}');
+      log('Deleted list file: ${file.path}'); // Debug logging for deleting list from path
     }
   }
 }

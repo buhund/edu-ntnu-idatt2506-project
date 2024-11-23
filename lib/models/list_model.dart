@@ -4,9 +4,10 @@ import 'item_model.dart';
 
 class ListModel {
   final String name;
-  final List<ItemModel> items;
+  List<ItemModel> items;
 
-  ListModel({required this.name, this.items = const []});
+  ListModel({required this.name, List<ItemModel>? items})
+      : items = items ?? []; // Initialize as a mutable list
 
   // Convert ListModel to JSON
   Map<String, dynamic> toJson() {
@@ -26,3 +27,4 @@ class ListModel {
     );
   }
 }
+

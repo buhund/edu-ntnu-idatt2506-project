@@ -14,24 +14,37 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   late ListModel _listModel;
-  final TextEditingController _textController = TextEditingController(); // Controller for the text field
+  final TextEditingController _textController = TextEditingController(); // Controller for text field
+  final FocusNode _focusNode = FocusNode(); // FocusNode for managing focus on the input field for newe items
 
   @override
   void initState() {
     super.initState();
     _listModel = widget.listModel;
+    _listModel.items = List.from(_listModel.items); // Convert to mutable list
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose(); // Dispose of controller
+    _focusNode.dispose(); // Dispose of focus node
+    super.dispose();
   }
 
   void _addItem() {
     if (_textController.text.isNotEmpty) {
       setState(() {
         _listModel.items.add(ItemModel(text: _textController.text));
-        _textController.clear(); // Clear the input field after adding
+        _textController.clear(); // Clear the input field for addint item
       });
       _saveList();
+
+      // Refocus to text field input on top of list
+      _focusNode.requestFocus();
     }
   }
 
+  // Delete list item
   void _deleteItem(int index) {
     setState(() {
       _listModel.items.removeAt(index);
@@ -39,6 +52,7 @@ class _ListScreenState extends State<ListScreen> {
     _saveList();
   }
 
+  // Mark/toggle item as complete or incomplete
   void _toggleCompletion(int index) {
     setState(() {
       _listModel.items[index] = ItemModel(
@@ -49,10 +63,12 @@ class _ListScreenState extends State<ListScreen> {
     _saveList();
   }
 
+  // Save list to file
   Future<void> _saveList() async {
     await StorageService.writeList(_listModel);
   }
 
+  // Building the list screen
   @override
   Widget build(BuildContext context) {
     // Sort items: incomplete first, then complete
@@ -74,7 +90,8 @@ class _ListScreenState extends State<ListScreen> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _textController, // Attach the controller
+                    controller: _textController,
+                    focusNode: _focusNode, // Attach the focus node
                     decoration: const InputDecoration(
                       labelText: 'New Item',
                       border: OutlineInputBorder(),
@@ -101,8 +118,8 @@ class _ListScreenState extends State<ListScreen> {
                   leading: IconButton(
                     icon: Icon(
                       item.isCompleted
-                          ? Icons.check_circle // Full sirkel for fullført
-                          : Icons.radio_button_unchecked, // Tom sirkel for ikke-fullført
+                          ? Icons.check_circle // Filled circle for complete
+                          : Icons.radio_button_unchecked, // Empty circle for incomplete
                       color: item.isCompleted ? Colors.green : Colors.grey,
                     ),
                     onPressed: () => _toggleCompletion(
@@ -112,8 +129,8 @@ class _ListScreenState extends State<ListScreen> {
                     item.text,
                     style: TextStyle(
                       decoration: item.isCompleted
-                          ? TextDecoration.lineThrough // Strek gjennom for fullførte
-                          : TextDecoration.none, // Ingen stil for ikke-fullførte
+                          ? TextDecoration.lineThrough // Strike-through for completed
+                          : TextDecoration.none, // PLain text for incomplete
                     ),
                   ),
                   trailing: IconButton(
@@ -121,6 +138,8 @@ class _ListScreenState extends State<ListScreen> {
                     onPressed: () =>
                         _deleteItem(_listModel.items.indexOf(item)), // Delete the item
                   ),
+                  onTap: () => _toggleCompletion(
+                      _listModel.items.indexOf(item)), // Mark complete/incomplete on tap
                 );
               },
             ),
