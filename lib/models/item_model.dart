@@ -1,3 +1,5 @@
+// lib/models/list_model.dart
+
 class ItemModel {
   final String text;
   final bool isCompleted;

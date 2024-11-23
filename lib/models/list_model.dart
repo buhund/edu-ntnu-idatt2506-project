@@ -1,3 +1,5 @@
+// lib/models/list_model.dart
+
 import 'item_model.dart';
 
 class ListModel {
