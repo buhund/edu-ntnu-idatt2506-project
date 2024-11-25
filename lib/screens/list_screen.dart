@@ -51,6 +51,7 @@ class _ListScreenState extends State<ListScreen> {
     }
   }
 
+  // TODO RC2 Add confirmation for deletion of list item
   // Delete list item
   void _deleteItem(int index) {
     setState(() {

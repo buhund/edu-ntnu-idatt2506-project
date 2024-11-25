@@ -43,6 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
     await StorageService.writeList(newList); // Save to a separate file
   }
 
+  // TODO RC2 Add confirmation for deletion of list item
   Future<void> _deleteList(int index) async {
     final list = _lists[index];
     setState(() {
