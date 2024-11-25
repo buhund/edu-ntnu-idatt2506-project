@@ -32,7 +32,7 @@ Steps to run the app:
 - Install Android Studio, Android SDK, Java JDK21, Flutter and Dart SDK.
 - Unzip the file containing the source code into a suitable folder, e.g. `assignment_08_todo_project`
 - Open Android Studio, and open the folder where you unzipped the code as a new project.
-- Set up an emulator device (Medium Phone, API level 35, Android 15 "Vanilla Ice Cream") and start it via Device Manager by clicking the "Play" button (green arrow).
+- Set up an emulator device (Medium Phone, API level 35, Android 15 "Vanilla Ice Cream") and start it via Device Manager by clicking the "Play" button (white-grey arrow).
 - To run the app on the emulated device, press the large green "Play" button in the top right of the UI in Android Studio.
 - The app should now be running on the emulator device.
 - You can now interact with the app as you would on a physical device.
