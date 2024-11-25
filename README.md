@@ -8,7 +8,7 @@ Here be no triangular wheels, only round ones.
 
 #### Demo of the app
 
-![App Preview](todo-app-demo-01.gif)
+<img src="todo-app-demo-01.gif" alt="App Preview" height="400"/>
 
 ## Requirements
 
