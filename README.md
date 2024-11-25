@@ -1,4 +1,4 @@
-# assignment_08_project
+# IDATT2506 Mobile App Development - Assignment 08 - Crossplatform To Do App
 
 Multi-Platform To Do List App written in Dart using Flutter.
 
@@ -10,6 +10,17 @@ Here be no triangular wheels, only round ones.
 
 ![App Preview](todo-app-demo-01.gif)
 
+## Requirements
+
+- Flutter SDK
+- Android Studio
+- Android Emulator or physical device
+- Java JDK 21
+- Dart SDK
+- Android SDK
+- Android 15 "Vanilla Ice Cream" API level 35
+- Flutter and Dart plugins for Android Studio
+- Gradle
 
 ## Testing/Running the app
 
@@ -24,6 +35,75 @@ Steps to run the app:
 - The app should now be running on the emulator device.
 - You can now interact with the app as you would on a physical device.
 
+#### pubspec.yaml
+
+```yaml
+name: assignment_08_project
+description: "Multi-Platform To Do List App"
+
+publish_to: 'none' 
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  path_provider: ^2.1.5
+  flutter:
+    sdk: flutter
+  uuid: ^4.5.1
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+```
+
+#### settings.gradle
+
+```gradle
+pluginManagement {
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }()
+
+    includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+    id "com.android.application" version "8.7.2" apply false
+    id "org.jetbrains.kotlin.android" version "2.0.20" apply false
+}
+
+include ":app"
+```
+
+#### gradle-wrapper.properties
+
+```gradle
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.11.1-bin.zip
+networkTimeout=10000
+validateDistributionUrl=true
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+```
 
 
 ## Getting Started with Flutter
