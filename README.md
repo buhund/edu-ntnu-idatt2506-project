@@ -7,6 +7,8 @@ The design of the app is based on tried and true design patterns for notes- and 
 Here be no triangular wheels, only round ones.
 
 #### Demo of the app
+A short demo of the app, running on an Android emulator.
+Showing input via both on-screen keyboard and physical keyboard.
 
 <img src="todo-app-demo-01.gif" alt="App Preview" height="600"/>
 
