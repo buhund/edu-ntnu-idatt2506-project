@@ -14,15 +14,16 @@ Showing input via both on-screen keyboard and physical keyboard.
 
 ## Requirements
 
+- Java JDK 21
+- Gradle
 - Flutter SDK
+- Dart SDK
 - Android Studio
 - Android Emulator or physical device
-- Java JDK 21
-- Dart SDK
 - Android SDK
 - Android 15 "Vanilla Ice Cream" API level 35
 - Flutter and Dart plugins for Android Studio
-- Gradle
+
 
 ## Testing/Running the app
 
