@@ -16,7 +16,7 @@ class StorageService {
     // Ensure the directory exists
     final appDir = Directory(path);
     if (!(await appDir.exists())) {
-      await appDir.create(recursive: true); // Create the directory if it doesn't exist
+      await appDir.create(recursive: true); // Create the directory if it doesnt exist
     }
 
     log('Application directory: ${directory.path}'); // Debug log for base directory

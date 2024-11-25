@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleAddList() {
     if (_textController.text.isNotEmpty) {
       _addNewList(_textController.text); // Add new list via bottom input field
-      _textController.clear(); // Empty textfield on submit
+      _textController.clear(); // Empty text field on submit
       FocusScope.of(context).requestFocus(FocusNode()); // Refocus input field
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('My Lists'),
         actions: [
-          // Add list via + button and dialog. Not as per assignment spec
+          // Add list via + button and dialog. Disabled for now.
           /**IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {

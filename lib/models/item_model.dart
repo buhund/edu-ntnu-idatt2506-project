@@ -32,7 +32,7 @@ class ItemModel {
     );
   }
 
-  // Fancy Factory for creating new item with unique ID
+  // Factory for creating new item with unique ID
   factory ItemModel.newItem({required String text}) {
     return ItemModel(
       id: const Uuid().v4(),

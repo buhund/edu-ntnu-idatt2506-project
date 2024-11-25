@@ -64,7 +64,7 @@ class _ListScreenState extends State<ListScreen> {
   void _toggleCompletion(int index) {
     setState(() {
       _listModel.items[index] = ItemModel(
-        id: _listModel.items[index].id, // Behold eksisterende ID
+        id: _listModel.items[index].id,
         text: _listModel.items[index].text,
         isCompleted: !_listModel.items[index].isCompleted,
       );

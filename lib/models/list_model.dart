@@ -35,7 +35,7 @@ class ListModel {
   }
 
 
-  // Fancy Factory for creating new list with unique ID
+  // Factory for creating new list with unique ID
   factory ListModel.newList({required String name}) {
     return ListModel(
       id: const Uuid().v4(),
