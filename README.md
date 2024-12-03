@@ -6,6 +6,14 @@ The design of the app is based on tried and true design patterns for notes- and 
 
 Here be no triangular wheels, only round ones.
 
+
+#### Assignment feedback/evaluation
+
+> Tilbakemelding til studenten 02.12.24 17:38
+>
+> Veldig godt prosjekt du leverer. Interaksjonsdesign-vedlegget ditt er bra, veldig lurt at du tar utgangspunkt i vell-etablerte løsninger som Apples notater-applikasjon. Det er veldig smart og sørger for at applikasjonen din oppnår høy standard. Applikasjonen din ser minimalistisk og god ut, veldig bra. Rapporten din er også veldig god, fint du lister opp en god mengde fordeler og ulemper for hver av alternativene, kjempe bra."
+
+
 #### Demo of the app
 A short demo of the app, running on an Android emulator.
 Showing input via both on-screen keyboard and physical keyboard.
